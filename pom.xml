@@ -161,11 +161,11 @@
                 <rule>
                   <element>CLASS</element>
                   <excludes>
-                    <exclude>com.ricardococati.api-book.CharlesXavierApplication</exclude>
-                    <exclude>com.ricardococati.api-book.config.**</exclude>
-                    <exclude>com.ricardococati.api-book.domains.**</exclude>
-                    <exclude>com.ricardococati.api-book.exceptions.**</exclude>
-                    <exclude>com.ricardococati.api-book.gateways.impl.**</exclude>
+                    <exclude>com.ricardococati.apibook.Application</exclude>
+                    <exclude>com.ricardococati.apibook.config.**</exclude>
+                    <exclude>com.ricardococati.apibook.domains.**</exclude>
+                    <exclude>com.ricardococati.apibook.exceptions.**</exclude>
+                    <exclude>com.ricardococati.apibook.gateways.impl.**</exclude>
                   </excludes>
                   <limits>
                     <limit>
