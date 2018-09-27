@@ -41,6 +41,7 @@ public class BookConverter {
   public static Book bookConverter(BookConverter bookConverter) {
     return Book.builder()
         .description(bookConverter.getDescription())
+        .idBook(bookConverter.getIdBook())
         .title(bookConverter.getTitle())
         .isbn(bookConverter.getIsbn())
         .language(bookConverter.getLanguage())

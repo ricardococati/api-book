@@ -14,7 +14,7 @@ This project aims to include and consult books on database.
 
 * [Java 1.8](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html)
 * [Spring Boot](https://projects.spring.io/spring-boot/) * Default tomcat embedded
-* [HSQLDB](http://hsqldb.org/) * Used to store data
+* [MongoDB](https://www.mongodb.com/) * MongoDB in memory, used to store data
 * [JUnit](https://junit.org/junit5/)
 * [Jacoco](https://www.jacoco.org/)
 * [Swagger](https://swagger.io/)
@@ -51,6 +51,10 @@ Connection URL:
 
 ```json
 {
-  
+  "ISBN": 12345678,
+  "id": "234KJHGFSDKJG",
+  "description": "test desc",
+  "language": "pt_BR",
+  "title": "tests"
 }
 ```

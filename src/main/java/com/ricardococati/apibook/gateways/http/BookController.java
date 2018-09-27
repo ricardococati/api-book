@@ -6,6 +6,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import com.ricardococati.apibook.gateways.converter.BookConverter;
 import com.ricardococati.apibook.usecases.CreateBook;
 import com.ricardococati.apibook.usecases.FindBook;
+import com.ricardococati.apibook.usecases.FindExternalBook;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -31,6 +32,7 @@ public class BookController {
 
   private final CreateBook createBook;
   private final FindBook findBook;
+  private final FindExternalBook findExternalBook;
 
   @ApiOperation(value = "Create a new Book", response = Boolean.class)
   @ApiResponses(
@@ -53,11 +55,10 @@ public class BookController {
   @ApiOperation(value = "List all books", response = List.class)
   @ApiResponses(
       value = {
-          @ApiResponse(code = 302, message = "Found", response = BookConverter.class),
+          @ApiResponse(code = 302, message = "Found", response = List.class),
           @ApiResponse(code = 404, message = "Not found")
       })
   @RequestMapping(
-      value = "/",
       method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<List<BookConverter>> listBooks() {
@@ -84,5 +85,23 @@ public class BookController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     return new ResponseEntity<>(bookConverter, HttpStatus.FOUND);
+  }
+
+  @ApiOperation(value = "List books by URL", response = List.class)
+  @ApiResponses(
+      value = {
+          @ApiResponse(code = 302, message = "Found", response = List.class),
+          @ApiResponse(code = 404, message = "Not found")
+      })
+  @RequestMapping(
+      value = "/findbyurl",
+      method = RequestMethod.GET,
+      produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<List<BookConverter>> findBooksByURL() {
+    List<BookConverter> lista = findExternalBook.findBookByURL();
+    if (isEmpty(lista)) {
+      return new ResponseEntity<>(lista, HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<List<BookConverter>>(lista, HttpStatus.FOUND);
   }
 }

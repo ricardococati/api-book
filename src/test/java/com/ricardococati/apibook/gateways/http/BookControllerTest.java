@@ -1,7 +1,9 @@
 package com.ricardococati.apibook.gateways.http;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -9,6 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ricardococati.apibook.gateways.BookGateway;
 import com.ricardococati.apibook.gateways.converter.BookConverter;
 import com.ricardococati.apibook.usecases.CreateBook;
+import com.ricardococati.apibook.usecases.FindBook;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +29,9 @@ import org.springframework.test.web.servlet.ResultActions;
 public class BookControllerTest {
 
   @Autowired private MockMvc mockMvc;
-
   @MockBean private CreateBook usecaseMock;
-
+  @MockBean private FindBook findBookMock;
   @Autowired private ObjectMapper objectMapper;
-
   @MockBean private BookGateway gatewayMock;
 
   @Test
@@ -85,6 +88,63 @@ public class BookControllerTest {
                 .accept(MediaType.APPLICATION_JSON));
     // THEN
     result.andExpect(status().is5xxServerError());
+  }
+
+  @Test
+  public void findAllBookThenReturnOkTest() throws Exception {
+    // GIVEN
+    List<BookConverter> bookConverterList = Arrays.asList(buildBook());
+    when(findBookMock.findAll()).thenReturn(bookConverterList);
+    // WHEN
+    final ResultActions result =
+        this.mockMvc.perform(
+            get("/api/v1/books/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+    // THEN
+    result.andExpect(status().isFound());
+  }
+
+  @Test
+  public void findAllBookThenReturnNullTest() throws Exception {
+    // GIVEN
+    when(findBookMock.findAll()).thenReturn(null);
+    // WHEN
+    final ResultActions result =
+        this.mockMvc.perform(
+            get("/api/v1/books/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+    // THEN
+    result.andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void findBookByIdThenReturnOkTest() throws Exception {
+    // GIVEN
+    when(findBookMock.findByIdBook(anyString())).thenReturn(buildBook());
+    // WHEN
+    final ResultActions result =
+        this.mockMvc.perform(
+            get("/api/v1/books/TCACTG")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+    // THEN
+    result.andExpect(status().isFound());
+  }
+
+  @Test
+  public void findBookByIdThenReturnNullTest() throws Exception {
+    // GIVEN
+    when(findBookMock.findByIdBook(anyString())).thenReturn(null);
+    // WHEN
+    final ResultActions result =
+        this.mockMvc.perform(
+            get("/api/v1/books/TCACTG")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+    // THEN
+    result.andExpect(status().isNotFound());
   }
 
   private BookConverter buildBook() {
