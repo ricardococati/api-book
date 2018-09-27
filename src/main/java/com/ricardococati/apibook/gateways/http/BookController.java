@@ -55,8 +55,8 @@ public class BookController {
   @ApiOperation(value = "List all books", response = List.class)
   @ApiResponses(
       value = {
-          @ApiResponse(code = 302, message = "Found", response = List.class),
-          @ApiResponse(code = 404, message = "Not found")
+        @ApiResponse(code = 302, message = "Found", response = List.class),
+        @ApiResponse(code = 404, message = "Not found")
       })
   @RequestMapping(
       method = RequestMethod.GET,
@@ -80,18 +80,20 @@ public class BookController {
       method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<BookConverter> findById(@PathVariable("id") String id) {
-    BookConverter bookConverter = findBook.findByIdBook(id);
-    if (isNull(bookConverter)) {
+    try {
+      BookConverter bookConverter = findBook.findByIdBook(id);
+      return new ResponseEntity<>(bookConverter, HttpStatus.FOUND);
+    } catch (Exception ex) {
+      log.debug("Error on find by Id");
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    return new ResponseEntity<>(bookConverter, HttpStatus.FOUND);
   }
 
   @ApiOperation(value = "List books by URL", response = List.class)
   @ApiResponses(
       value = {
-          @ApiResponse(code = 302, message = "Found", response = List.class),
-          @ApiResponse(code = 404, message = "Not found")
+        @ApiResponse(code = 302, message = "Found", response = List.class),
+        @ApiResponse(code = 404, message = "Not found")
       })
   @RequestMapping(
       value = "/findbyurl",
