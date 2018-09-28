@@ -26,12 +26,10 @@ public class CreateBookImpl implements CreateBook {
     if (!existsBook(book)) {
       returned = nonNull(bookGateway.save(book));
     }
-    log.info(bookGateway.findAll().toString());
     return returned;
   }
 
   private boolean existsBook(Book book) {
     return bookGateway.existsBookByIsbn(book.getIsbn());
   }
-
 }
