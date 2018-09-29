@@ -20,7 +20,7 @@ public class Book implements Serializable {
   private String idBook;
   private String title;
   private String description;
-  private Long isbn;
+  private String isbn;
   private String language;
 
 }

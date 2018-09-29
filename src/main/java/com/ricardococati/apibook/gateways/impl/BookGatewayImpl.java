@@ -4,8 +4,11 @@ import com.ricardococati.apibook.domains.Book;
 import com.ricardococati.apibook.exceptions.ValidationException;
 import com.ricardococati.apibook.gateways.BookGateway;
 import com.ricardococati.apibook.gateways.repository.BookRepository;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,7 +35,12 @@ public class BookGatewayImpl implements BookGateway {
   }
 
   @Override
-  public boolean existsBookByIsbn(Long isbn) {
+  public Document findByURL(String url) throws IOException {
+    return Jsoup.connect(url).get();
+  }
+
+  @Override
+  public boolean existsBookByIsbn(String isbn) {
     return bookRepository.existsByIsbn(isbn);
   }
 }

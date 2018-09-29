@@ -114,7 +114,7 @@ public class BookControllerTest {
         .andExpect(jsonPath("$[0].description", is("001")))
         .andExpect(jsonPath("$[0].title", is("001")))
         .andExpect(jsonPath("$[0].language", is("pt")))
-        .andExpect(jsonPath("$[0].ISBN", is(1)));
+        .andExpect(jsonPath("$[0].ISBN", is("1")));
   }
 
   @Test
@@ -148,7 +148,7 @@ public class BookControllerTest {
         .andExpect(jsonPath("$.description", is("001")))
         .andExpect(jsonPath("$.title", is("001")))
         .andExpect(jsonPath("$.language", is("pt")))
-        .andExpect(jsonPath("$.ISBN", is(1)));
+        .andExpect(jsonPath("$.ISBN", is("1")));
   }
 
   @Test
@@ -184,7 +184,7 @@ public class BookControllerTest {
         .andExpect(jsonPath("$[0].description", is("001")))
         .andExpect(jsonPath("$[0].title", is("001")))
         .andExpect(jsonPath("$[0].language", is("pt")))
-        .andExpect(jsonPath("$[0].ISBN", is(1)));
+        .andExpect(jsonPath("$[0].ISBN", is("1")));
   }
 
   @Test
@@ -206,7 +206,7 @@ public class BookControllerTest {
         .description("001")
         .title("001")
         .language("pt")
-        .isbn(1L)
+        .isbn("1")
         .idBook("001")
         .build();
   }

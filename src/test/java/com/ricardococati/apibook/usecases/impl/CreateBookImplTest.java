@@ -1,7 +1,7 @@
 package com.ricardococati.apibook.usecases.impl;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.ricardococati.apibook.domains.Book;
@@ -24,7 +24,7 @@ public class CreateBookImplTest {
   @Test
   public void createBookReturnTrueTest() {
     //GIVEN
-    when(gateway.existsBookByIsbn(anyLong())).thenReturn(false);
+    when(gateway.existsBookByIsbn(anyString())).thenReturn(false);
     when(gateway.save(any())).thenReturn(buildBook());
     //WHEN
     Boolean returned = target.createBook(buildBook());
@@ -36,7 +36,7 @@ public class CreateBookImplTest {
   @Test
   public void createBookReturnFalseTest() {
     //GIVEN
-    when(gateway.existsBookByIsbn(anyLong())).thenReturn(false);
+    when(gateway.existsBookByIsbn(anyString())).thenReturn(false);
     when(gateway.save(any())).thenReturn(null);
     //WHEN
     Boolean returned = target.createBook(buildBook());
@@ -48,7 +48,7 @@ public class CreateBookImplTest {
   @Test
   public void createBookReturnFalseExistBookTrueTest() {
     //GIVEN
-    when(gateway.existsBookByIsbn(anyLong())).thenReturn(true);
+    when(gateway.existsBookByIsbn(anyString())).thenReturn(true);
     //WHEN
     Boolean returned = target.createBook(buildBook());
     //THEN
@@ -61,7 +61,7 @@ public class CreateBookImplTest {
         .description("001")
         .title("001")
         .language("pt")
-        .isbn(1L)
+        .isbn("1")
         .idBook("001")
         .build();
   }

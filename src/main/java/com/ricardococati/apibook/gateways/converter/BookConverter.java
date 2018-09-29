@@ -24,7 +24,7 @@ public class BookConverter {
   @JsonProperty("description")
   private String description;
   @JsonProperty("ISBN")
-  private Long isbn;
+  private String isbn;
   @JsonProperty("language")
   private String language;
 

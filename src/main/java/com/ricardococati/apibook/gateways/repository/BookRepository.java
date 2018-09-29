@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface BookRepository extends MongoRepository<Book, String> {
 
-  boolean existsByIsbn(Long isbn);
+  boolean existsByIsbn(String isbn);
 
   Optional<Book> findById(String idBook);
 }

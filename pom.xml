@@ -179,7 +179,7 @@
                     <exclude>com.ricardococati.apibook.config.**</exclude>
                     <exclude>com.ricardococati.apibook.domains.**</exclude>
                     <exclude>com.ricardococati.apibook.exceptions.**</exclude>
-                    <exclude>com.ricardococati.apibook.gateways.impl.**</exclude>
+                    <exclude>com.ricardococati.apibook.gateways.**</exclude>
                   </excludes>
                   <limits>
                     <limit>
