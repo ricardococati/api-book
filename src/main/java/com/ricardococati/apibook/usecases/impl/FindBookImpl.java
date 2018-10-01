@@ -1,13 +1,11 @@
 package com.ricardococati.apibook.usecases.impl;
 
-import com.ricardococati.apibook.domains.Book;
 import com.ricardococati.apibook.exceptions.ValidationException;
 import com.ricardococati.apibook.gateways.BookGateway;
 import com.ricardococati.apibook.gateways.converter.BookConverter;
 import com.ricardococati.apibook.usecases.FindBook;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,11 +1,7 @@
 package com.ricardococati.apibook.gateways.converter;
 
-import static java.util.Objects.nonNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ricardococati.apibook.domains.Book;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

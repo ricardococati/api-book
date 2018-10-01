@@ -1,6 +1,5 @@
 package com.ricardococati.apibook.gateways.http;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
