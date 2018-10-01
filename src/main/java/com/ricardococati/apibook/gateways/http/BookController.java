@@ -10,6 +10,7 @@ import com.ricardococati.apibook.usecases.FindExternalBook;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +85,7 @@ public class BookController {
       BookConverter bookConverter = findBook.findByIdBook(id);
       return new ResponseEntity<>(bookConverter, HttpStatus.FOUND);
     } catch (Exception ex) {
-      log.debug("Error on find by Id");
+      log.debug("Error on find by Id: ", ex.getMessage());
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
@@ -100,10 +101,16 @@ public class BookController {
       method = RequestMethod.GET,
       produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<List<BookConverter>> findBooksByURL() {
-    List<BookConverter> lista = findExternalBook.findBookByURL();
-    if (isEmpty(lista)) {
-      return new ResponseEntity<>(lista, HttpStatus.NOT_FOUND);
+    List<BookConverter> lista = null;
+    try {
+      lista = findExternalBook.findBookByURL();
+      if (isEmpty(lista)) {
+        return new ResponseEntity<>(lista, HttpStatus.NOT_FOUND);
+      }
+      return new ResponseEntity<List<BookConverter>>(lista, HttpStatus.FOUND);
+    } catch (IOException e) {
+      log.debug("Error on find by URL: ", e.getMessage());
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    return new ResponseEntity<List<BookConverter>>(lista, HttpStatus.FOUND);
   }
 }

@@ -2,6 +2,7 @@ package com.ricardococati.apibook.usecases.impl;
 
 import com.ricardococati.apibook.gateways.BookGateway;
 import com.ricardococati.apibook.gateways.converter.BookConverter;
+import com.ricardococati.apibook.gateways.converter.BookValue;
 import com.ricardococati.apibook.usecases.FindExternalBook;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,44 +24,60 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FindExternalBookImpl implements FindExternalBook {
 
+  private static final String TAG_NAME_ARTICLE = "article";
+  private static final String URL = "https://kotlinlang.org/docs/books.html";
   private final BookGateway bookGateway;
   private static final String END_URL_PATTERN = "^.*(\\/dp\\/)([\\w+]*)(\\/?.*)?";
 
   @Override
-  public List<BookConverter> findBookByURL() {
+  public List<BookConverter> findBookByURL() throws IOException {
     List<BookConverter> bookConverterList = new ArrayList<>();
-    List<String> listTitle = new ArrayList<>();
-    List<String> listDescription = new ArrayList<>();
-    List<String> listLanguage = new ArrayList<>();
-    List<String> listISBN = new ArrayList<>();
-    try {
-      Document document = bookGateway.findByURL("https://kotlinlang.org/docs/books.html");
-      Elements elementsByTag =
-          Optional.ofNullable(document)
-              .orElseThrow(RuntimeException::new)
-              .getElementsByTag("article");
-      for (Element element : elementsByTag) {
-        listTitle.addAll(getElementTitle(element));
-        listLanguage.addAll(getElementLanguage(element));
-        listDescription.addAll(getElementDescription(element));
-        listISBN.addAll(getElementIsbn(element));
-      }
-    } catch (IOException e) {
-      log.debug("Error on connect URL");
+    List<BookValue> bookValueList = new ArrayList<>();
+    Document document = bookGateway.findByURL(URL);
+    Elements elementsByTag =
+        Optional.ofNullable(document)
+            .orElseThrow(RuntimeException::new)
+            .getElementsByTag(TAG_NAME_ARTICLE);
+
+    for (Element element : elementsByTag) {
+      bookValueList.addAll(getElementBooks(element));
+    }
+    for (BookValue bookValue: bookValueList) {
+      bookConverterList.add(BookConverter.bookConverter(bookValue));
     }
     return bookConverterList;
   }
 
-  private List<String> getElementDescription(Element element) {
-    Elements elementsP = element.getElementsByTag("p");
-    List<String> listDescription = new ArrayList<>();
-    for (Element elementP : elementsP) {
-      listDescription.add(elementP.text());
+  private List<BookValue> getElementBooks(Element element) {
+    Elements elementsTitle = element.getElementsByTag("h2");
+    List<BookValue> bookValueList = new ArrayList<>();
+    for (Element elementH2 : elementsTitle) {
+      BookValue bookValue = new BookValue();
+      if (StringUtils.isNotEmpty(elementH2.text()) && !bookValueList.contains(elementH2.text())) {
+        bookValue.setTitle(elementH2.text());
+        bookValueList.add(bookValue);
+      }
     }
-    return listDescription;
+    bookValueList = getElementLanguage(element, bookValueList);
+    bookValueList = getElementDescription(element, bookValueList);
+    bookValueList = getElementIsbn(element, bookValueList);
+    return bookValueList;
   }
 
-  private List<String> getElementLanguage(Element element) {
+  private List<BookValue> getElementDescription(Element element, List<BookValue> bookValueList) {
+    Elements elementsP = element.getElementsByTag("p");
+    for (Element elementP : elementsP) {
+      for (int i = 0; i < bookValueList.size(); i++) {
+        if (StringUtils.isNotEmpty(elementP.text())
+            && elementP.text().contains(bookValueList.get(i).getTitle())) {
+          bookValueList.get(i).setDescription(elementP.text());
+        }
+      }
+    }
+    return bookValueList;
+  }
+
+  private List<BookValue> getElementLanguage(Element element, List<BookValue> bookValueList) {
     Elements elementsDiv = element.getElementsByClass("event-lang");
     List<String> listLanguage = new ArrayList<>();
     for (Element elementDiv : elementsDiv) {
@@ -67,33 +85,42 @@ public class FindExternalBookImpl implements FindExternalBook {
         listLanguage.add(elementDiv.text());
       }
     }
-    return listLanguage;
-  }
-
-  private List<String> getElementTitle(Element element) {
-    Elements elementsH2 = element.getElementsByTag("h2");
-    List<String> listTitle = new ArrayList<>();
-    for (Element elementH2 : elementsH2) {
-      if (StringUtils.isNotEmpty(elementH2.text())) {
-        listTitle.add(elementH2.text());
+    if (bookValueList.size() == listLanguage.size()) {
+      for (int i = 0; i < bookValueList.size(); i++) {
+        bookValueList.get(i).setLanguage(listLanguage.get(i));
       }
     }
-    return listTitle;
+    return bookValueList;
   }
 
-  private List<String> getElementIsbn(Element element) {
+  private List<BookValue> getElementIsbn(Element element, List<BookValue> bookValueList) {
     Elements elementsH2 = element.getElementsByTag("a");
-    List<String> listTitle = new ArrayList<>();
-    for (Element elementH2 : elementsH2) {
-      if (StringUtils.isNotEmpty(elementH2.toString())) {
-        listTitle.add(elementH2.toString());
-        String s = elementH2.toString();
-        Matcher m = Pattern.compile(END_URL_PATTERN).matcher(s);
-        if (m.matches()) {
-          System.out.println("1: " + m.group(2));
+    List<String> listLink = new ArrayList<>();
+    List<String> listLinkFinal = new ArrayList<>();
+    for (int i = 0; i < bookValueList.size(); i++) {
+      for (Element elementH2 : elementsH2) {
+        if (elementH2.text().contains(bookValueList.get(i).getTitle())
+            && !listLinkFinal.contains(elementH2.toString())) {
+          listLinkFinal.add(elementH2.toString());
         }
       }
     }
-    return listTitle;
+    for (String elementH2 : listLinkFinal) {
+      if (StringUtils.isNotEmpty(elementH2.toString())) {
+        Matcher matcher = Pattern.compile(END_URL_PATTERN).matcher(elementH2);
+        if (matcher.matches()) {
+          listLink.add(matcher.group(2));
+        } else {
+          listLink.add("Unavailable");
+        }
+      }
+    }
+    if (bookValueList.size() == listLink.size()) {
+      for (int i = 0; i < bookValueList.size(); i++) {
+        bookValueList.get(i).setIsbn(listLink.get(i));
+      }
+    }
+    return bookValueList;
   }
+
 }

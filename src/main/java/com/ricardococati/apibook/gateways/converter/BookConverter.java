@@ -48,4 +48,14 @@ public class BookConverter {
         .build();
   }
 
+  public static BookConverter bookConverter(BookValue bookConverter) {
+    return BookConverter.builder()
+        .description(bookConverter.getDescription())
+        .idBook("")
+        .title(bookConverter.getTitle())
+        .isbn(bookConverter.getIsbn())
+        .language(bookConverter.getLanguage())
+        .build();
+  }
+
 }

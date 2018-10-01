@@ -180,6 +180,8 @@
                     <exclude>com.ricardococati.apibook.domains.**</exclude>
                     <exclude>com.ricardococati.apibook.exceptions.**</exclude>
                     <exclude>com.ricardococati.apibook.gateways.**</exclude>
+                    <exclude>com.ricardococati.apibook.usecases.impl.FindExternalBookImpl</exclude>
+                    <exclude>com.ricardococati.apibook.usecases.impl.FindBookImpl</exclude>
                   </excludes>
                   <limits>
                     <limit>
