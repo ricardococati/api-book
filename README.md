@@ -7,7 +7,7 @@ This project aims to include and consult books on database.
 * Include books on database.
 * List books by id.
 * List all books.
-* Read books from another page and save on database.
+* Read books from another page.
 
 
 #### Technology
@@ -20,6 +20,7 @@ This project aims to include and consult books on database.
 * [Swagger](https://swagger.io/)
 * [Lombok](https://projectlombok.org/)
 * [Maven](https://maven.apache.org/)
+* [Jsoup](https://jsoup.org/) * Used to read remote HTML
 * [Google Java Style Guides Formatter](https://github.com/google/styleguide/blob/gh-pages/intellij-java-google-style.xml)
 
 #### Prerequisites for local execution:
